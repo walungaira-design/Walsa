@@ -208,7 +208,7 @@ $lastname = find_between($resposta, '"last":"', '"');
 // $email = str_replace("example.com", $serv_rnd, $email);
 
 // Set your own email directly
-$email = "amanpandey125aman@gmail.com"; // Replace with your actual email
+$email = "bhokbantawa@gmail.com"; // Replace with your actual email
 
 function getMinimumPriceProductDetails(string $json): array {
     $data = json_decode($json, true);
