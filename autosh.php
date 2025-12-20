@@ -328,7 +328,21 @@ if (empty($minPriceProductId)) {
 
 $urlbase = $site1;
 $domain = parse_url($urlbase, PHP_URL_HOST); 
-$cookie = 'cookie.txt';
+$cookie = 'cookie_' . md5(uniqid() . microtime() . rand(1000, 9999)) . '.txt';
+
+// Add cleanup function (add this right after the above line):
+register_shutdown_function(function() use ($cookie) {
+    // Clean up current cookie file
+    if (file_exists($cookie)) {
+        @unlink($cookie);
+    }
+    // Optional: Clean up old cookie files
+    foreach (glob('cookie_*.txt') as $file) {
+        if (time() - filemtime($file) > 300) { // 5 minutes old
+            @unlink($file);
+        }
+    }
+});
 $prodid = $minPriceProductId;
 cart:
 $ch = curl_init();
