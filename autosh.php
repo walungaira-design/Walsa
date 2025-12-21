@@ -328,17 +328,20 @@ if (empty($minPriceProductId)) {
 
 $urlbase = $site1;
 $domain = parse_url($urlbase, PHP_URL_HOST); 
-$cookie = 'cookie_' . md5(uniqid() . microtime() . rand(1000, 9999)) . '.txt';
+// Generate unique cookie file for each request
+$cookie = 'cookie_' . md5(uniqid() . microtime(true) . rand(1000, 9999)) . '.txt';
 
-// Add cleanup function (add this right after the above line):
+// Clean up cookie files on shutdown
 register_shutdown_function(function() use ($cookie) {
-    // Clean up current cookie file
-    if (file_exists($cookie)) {
+    // Clean up current session cookie
+    if (isset($cookie) && file_exists($cookie)) {
         @unlink($cookie);
     }
-    // Optional: Clean up old cookie files
-    foreach (glob('cookie_*.txt') as $file) {
-        if (time() - filemtime($file) > 300) { // 5 minutes old
+    
+    // Clean up old cookie files (older than 5 minutes)
+    $cookie_files = glob('cookie_*.txt');
+    foreach ($cookie_files as $file) {
+        if (time() - filemtime($file) > 300) { // 300 seconds = 5 minutes
             @unlink($file);
         }
     }
